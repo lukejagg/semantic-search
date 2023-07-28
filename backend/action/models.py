@@ -9,10 +9,9 @@ from django.db import models
         body: 'http://google.com'
 '''
 class Action(models.Model):
-    type = models.CharField(max_length = 100)
 
     body = models.CharField(max_length = 500)
 
 
     def __str__(self):
-        return f'{self.type}: {self.body}'
+        return f'Action Body: {self.body}'

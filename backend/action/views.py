@@ -33,22 +33,21 @@ def handle_click_link(link):
 
 # CRUD logic
 @api_view(['POST'])
-def post_action(request):
+def post_search(request, search_value):
     if request.method == 'POST':
-        serializer = ActionSerializer(data = request.data)
+        return handle_search(search_value)
 
+
+@api_view(['POST'])
+def post_autocomplete(request, search_value):
+    if request.method == 'POST':
+        return handle_autocomplete(search_value)
+
+@api_view(['POST'])
+def post_click_link(request):
+    if request.method == 'POST':
+        serializer = ActionSerializer(data=request.data)
         if serializer.is_valid():
             action = serializer.data
-            
-            if action['type'] == ActionType.SEARCH:
-                return handle_search(action['body'])
-            
-            if action['type'] == ActionType.AUTOCOMPLETE:
-                return handle_autocomplete(action['body'])
-            
-            if action['type'] == ActionType.CLICK_LINK:
-                return handle_click_link(action['body'])            
-
-            return Response(serializer.data, status=200)
-        
+            return handle_click_link(action['body'])
         return Response(serializer.errors, status=400)
