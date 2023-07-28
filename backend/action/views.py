@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from action.models import Action
-from action.serializers import ActionSerializer
+from .models import Action
+from .serializers import ActionSerializer
 from enum import Enum
-from ...search.search import search, autocomplete
+from search.search import search, autocomplete
 
 class ActionType(Enum):
     SEARCH = 'search'

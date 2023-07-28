@@ -1,8 +1,8 @@
 from django.urls import path
-from action import views
+from .views import post_action
 
 
 
 urlpatterns = [
-    path('', views.post_action, name='post-action')
+    path('', post_action, name='post-action')
 ]
