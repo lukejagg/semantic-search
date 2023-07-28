@@ -11,17 +11,17 @@ class ActionType(Enum):
     AUTOCOMPLETE = 'autocomplete'
     CLICK_LINK = 'click_link'
 
-def handle_search(search):
+def handle_search(search_value):
     # Input search into Luke's ML model to get semantic responses
-    text_response = ''
-    # text_response = ml_model.input(search)
+    text_response = search(search_value)
+
+    print(text_response)
 
     return Response(text_response, status=200)
 
-def handle_autocomplete(search):
+def handle_autocomplete(search_value):
     # Input search into Luke's ML model to get list of strings for autocomplete
-    autocomplete_strings = ['']
-    # autocomplete_strings = ml_model.input(search)
+    autocomplete_strings = autocomplete(search_value)
 
     return Response(autocomplete_strings, status=200)
 
@@ -32,15 +32,15 @@ def handle_click_link(link):
     return Response(status=200)
 
 # CRUD logic
-@api_view(['POST'])
-def post_search(request, search_value):
-    if request.method == 'POST':
+@api_view(['GET'])
+def get_search(request, search_value):
+    if request.method == 'GET':
         return handle_search(search_value)
 
 
-@api_view(['POST'])
-def post_autocomplete(request, search_value):
-    if request.method == 'POST':
+@api_view(['GET'])
+def get_autocomplete(request, search_value):
+    if request.method == 'GET':
         return handle_autocomplete(search_value)
 
 @api_view(['POST'])
