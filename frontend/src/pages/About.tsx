@@ -5,6 +5,7 @@ import {
   Button,
   Container,
   rem,
+  Box,
 } from "@mantine/core";
 import { Dots } from "../components/Dots";
 import Team from "../components/Team";
@@ -106,40 +107,51 @@ export function HeroText() {
   const navigate = useNavigate();
 
   return (
-    <Container className={classes.wrapper} size={1400}>
-      <Dots className={classes.dots} style={{ left: 0, top: 0 }} />
-      <Dots className={classes.dots} style={{ left: 60, top: 0 }} />
-      <Dots className={classes.dots} style={{ left: 0, top: 140 }} />
-      <Dots className={classes.dots} style={{ right: 0, top: 60 }} />
+    <>
+      <Box
+        // sx={{
+        //   background: "url(back.png)",
+        //   backgroundRepeat: "repeat",
+        //   backgroundColor: "white",
+        // }}
+        className="logo"
+      ></Box>
+      <div className="box"></div>
+      <Container className={classes.wrapper} size={1400}>
+        <Dots className={classes.dots} style={{ left: 0, top: 0 }} />
+        <Dots className={classes.dots} style={{ left: 60, top: 0 }} />
+        <Dots className={classes.dots} style={{ left: 0, top: 140 }} />
+        <Dots className={classes.dots} style={{ right: 0, top: 60 }} />
 
-      <div className={classes.inner}>
-        <Title className={classes.title}>
-          About{" "}
-          <Text component="span" className={classes.highlight} inherit>
-            Semantic Search
-          </Text>{" "}
-        </Title>
+        <div className={classes.inner}>
+          <Title className={classes.title}>
+            About{" "}
+            <Text component="span" className={classes.highlight} inherit>
+              Semantic Search
+            </Text>{" "}
+          </Title>
 
-        <Container p={0} size={600}>
-          <Text size="lg" color="dimmed" className={classes.description}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation
-          </Text>
-        </Container>
-        <div className={classes.controls}>
-          <Button
-            className={classes.control}
-            size="lg"
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            Back Home
-          </Button>
+          <Container p={0} size={600}>
+            <Text size="lg" color="dimmed" className={classes.description}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation
+            </Text>
+          </Container>
+          <div className={classes.controls}>
+            <Button
+              className={classes.control}
+              size="lg"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              Back Home
+            </Button>
+          </div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </>
   );
 }
 

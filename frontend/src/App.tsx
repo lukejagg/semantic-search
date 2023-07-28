@@ -79,15 +79,6 @@ export default function App() {
           },
         }}
       >
-        <Box
-          // sx={{
-          //   background: "url(back.png)",
-          //   backgroundRepeat: "repeat",
-          //   backgroundColor: "white",
-          // }}
-          className="logo"
-        ></Box>
-        <div className="box"></div>
         <RouterProvider router={router} />
       </MantineProvider>
     </>
