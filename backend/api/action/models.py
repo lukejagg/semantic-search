@@ -2,11 +2,11 @@ from django.db import models
 
 '''
     e.g.
-        type: search
-        body: static cloud documentation
+        type: 'search'
+        body: 'static cloud documentation'
 
-        type: click
-        body: http://google.com
+        type: 'click'
+        body: 'http://google.com'
 '''
 class Action(models.Model):
     type = models.CharField(max_length = 100)

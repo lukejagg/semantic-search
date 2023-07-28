@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'search', # search app
+    'action', # action endpoints
     'rest_framework' # rest framework lib installed
 ]
 
