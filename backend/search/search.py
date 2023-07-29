@@ -113,7 +113,7 @@ def search(query: str):
     return [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2} for doc in combined_results[:50]]
 
 def autocomplete(*args, **kwargs):
-    return []
+    return ['test']
 
 
 print("\n\nSEARCHING!!\n")
