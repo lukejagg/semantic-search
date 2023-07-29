@@ -76,7 +76,14 @@ class Result:
     tf_idf_similarity: float | None = None
     score: float = 0
 
+def log_search(link: str):
+    pass
+
+def log_click(link: str):
+    pass
+
 def search(query: str):
+    log_search(query)
     keywords = query.split()
     keyword_results = [doc for doc in documents if doc.keyword_match(keywords)]
 
