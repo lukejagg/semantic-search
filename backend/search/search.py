@@ -29,13 +29,14 @@ class Document:
         # Create chunks iteratively until max word size is reached, but 1 line at a time
         current_chunk = ""
         for line in raw.split("\n"):
-            if len(current_chunk.split(" ")) > 15:
+            if len(current_chunk.split(" ")) > 15 and len(current_chunk.strip()) > 0:
                 self.content.append(current_chunk)
                 current_chunk = ""
-            current_chunk += line + "\n"
+            current_chunk += line + " "
 
         # Add the last chunk
-        self.content.append(current_chunk)
+        if len(current_chunk.strip()) > 0:
+            self.content.append(current_chunk)
         self.embeddings = [model.encode(chunk) for chunk in self.content]
         
         for chunk, embedding in zip(self.content, self.embeddings):
@@ -109,7 +110,7 @@ def search(query: str):
     #for file, (doc) in combined_results:
     #    print(file, doc.cosine_similarity, doc.tf_idf_similarity)
 
-    return combined_results[:50]
+    return [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2} for doc in combined_results[:50]]
 
 def autocomplete(*args, **kwargs):
     return []
