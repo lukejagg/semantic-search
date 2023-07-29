@@ -7,6 +7,7 @@ from torch.utils.data import Dataset, DataLoader
 from rank_net import RankNet, ranknet_loss
 
 model = RankNet(1539)  # 768 * 2 + 3
+model.train()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
 # read pickle in ../backend/logging/clicks
@@ -53,7 +54,7 @@ class RankNetDataset(Dataset):
         self.logs = logs
 
     def __len__(self):
-        return len(self.logs) * 5
+        return len(self.logs) * 10
 
     def __getitem__(self, idx):
         # random index in self.logs (ignore idx)
@@ -73,7 +74,7 @@ dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
 # Assume X1, X2, and labels are your data
 # X1, X2 are batches of your feature vectors for document 1 and document 2
 # labels are batches of {0, 1} where 1 if document 1 is more relevant than document 2, and 0 otherwise
-for epoch in range(1000):  # number of epochs
+for epoch in range(100):  # number of epochs
     avg_loss = 0
     for X1, X2 in dataloader:
         optimizer.zero_grad()

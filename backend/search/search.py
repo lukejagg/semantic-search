@@ -18,6 +18,7 @@ from .rank_net import RankNet
 # Load LTR model
 ltr_model = RankNet(1539)  # 768 * 2 + 3
 ltr_model.load_state_dict(torch.load('search/model.pt'))
+ltr_model.eval()
 
 class ToyDoc(BaseDoc):
   text: str = ''
