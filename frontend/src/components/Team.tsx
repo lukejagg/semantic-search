@@ -105,7 +105,7 @@ const TeamSection = () => {
     {
       name: "Zach Tang",
       title: "Backend Dev",
-      bio: "Some Bio here",
+      bio: "",
       imageUrl: "/headshots/zach.png",
     },
     {
