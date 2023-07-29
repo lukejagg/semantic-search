@@ -1,4 +1,7 @@
+import copy
 import os
+import pickle
+
 from sentence_transformers import SentenceTransformer
 from docarray import BaseDoc
 from docarray.typing import NdArray
@@ -7,21 +10,27 @@ import numpy as np
 from vectordb import InMemoryExactNNVectorDB, HNSWVectorDB
 from sklearn.feature_extraction.text import TfidfVectorizer
 from attrs import define
+from typing import Any, Dict
 
 class ToyDoc(BaseDoc):
   text: str = ''
   file: str = ''
   embedding: NdArray[768]
 
-
 db = InMemoryExactNNVectorDB[ToyDoc](workspace='./workspace_path')
 
 # model = SentenceTransformer('all-MiniLM-L6-v2')
 model = SentenceTransformer('all-mpnet-base-v2')
 
+every_word = set()
 db_list = []
 class Document:
     def __init__(self, name, raw):
+        # set name to first line of file
+        name = raw.split("\n")[0]
+        # Remove first line from file
+        raw = "\n".join(raw.split("\n")[1:])
+
         self.name = name
         self.raw = raw
         self.content = []
@@ -51,7 +60,7 @@ class Document:
             return True
         return any(keyword.lower() in chunk.lower() for keyword in keywords for chunk in self.content)
 
-documents = []
+documents = {}
 vectorizer = TfidfVectorizer()
 def read_text_files_in_folder(folder_path):
     if not os.path.exists(folder_path):
@@ -59,9 +68,10 @@ def read_text_files_in_folder(folder_path):
     for filename in os.listdir(folder_path):
         print(filename)
         with open(os.path.join(folder_path, filename), 'r') as f:
-            documents.append(Document(filename, f.read()))
+            doc = Document(filename, f.read())
+            documents[doc.name] = doc
 
-    docs_content = [' '.join(doc.content) for doc in documents]
+    docs_content = [' '.join(doc.content) for doc in documents.values()]
     vectorizer.fit_transform(docs_content)
 
 read_text_files_in_folder('documents')
@@ -75,17 +85,59 @@ class Result:
     cosine_similarity: float | None = None
     tf_idf_similarity: float | None = None
     score: float = 0
+    embedding: Any = None
+
+
+# Logging
+logging = {}
+latest_search = None
+# Get highest index in logging folder
+logging_index = 0
+for filename in os.listdir('logging/clicks'):
+    logging_index = max(logging_index, int(filename.split('.')[0]))
+logging_index += 1
 
 def log_search(link: str):
-    pass
+    # Add a new line to logging/searches.txt
+    with open('logging/searches.txt', 'a') as file:
+        file.write(link + '\n')
 
 def log_click(link: str):
-    pass
+    global latest_search, logging_index
+    # Add link to logs
+    log = copy.deepcopy(latest_search)
+    log['link'] = link
+    # Save click logs to file
+    if latest_search is not None:
+        path = 'logging/clicks/' + str(logging_index) + '.pickle'
+        with open(path, 'wb') as file:
+            pickle.dump(latest_search, file)
+    logging_index += 1
+
+def cosine(query_embedding, word):
+    return np.dot(query_embedding, word) / (np.linalg.norm(query_embedding) * np.linalg.norm(word))
+
+def apply_bold(result, query, query_embedding):
+    # Only bold words that are in the query
+    # Ignore grammar and capitalization for bolding
+    # Also ignore filler words, like and, a, the, that, etc.
+    desc = result['description']
+
+    # Get each sentence in desc
+    sentences = desc.split('.')
+    sentence_cosine_similarities = {sentence: cosine(query_embedding, model.encode(sentence)) for sentence in sentences}
+    # Sort sentences by cosine similarity
+    sentences = sorted(sentences, key=lambda x: sentence_cosine_similarities[x], reverse=True)
+    # Bold the first sentence
+    if sentence_cosine_similarities[sentences[0]] > 0.2:
+        sentences[0] = '<b>' + sentences[0] + '</b>'
+    result['description'] = '.'.join(sentences)
+    return result
 
 def search(query: str):
     log_search(query)
     keywords = query.split()
-    keyword_results = [doc for doc in documents if doc.keyword_match(keywords)]
+    keyword_results = [doc for doc in documents.values() if doc.keyword_match(keywords)]
 
     # Use document embeddings for semantic search with ScanN
     query_embedding = model.encode(query)
@@ -96,7 +148,7 @@ def search(query: str):
     for m in results[0].matches:
         cosine_similarity = np.dot(query_embedding, m.embedding) / (np.linalg.norm(query_embedding) * np.linalg.norm(m.embedding))
         if m.file not in combined_results or cosine_similarity > combined_results[m.file].cosine_similarity:
-            combined_results[m.file] = Result(content1=m.text, cosine_similarity=cosine_similarity)
+            combined_results[m.file] = Result(content1=m.text, cosine_similarity=cosine_similarity, embedding=m.embedding)
 
     for doc in keyword_results:
         doc_vec = vectorizer.transform([' '.join(doc.content)])
@@ -109,15 +161,24 @@ def search(query: str):
             combined_results[doc.name].content2 = doc.content[0]
             combined_results[doc.name].tf_idf_similarity = cosine_similarity
 
+
+
     # Set scores
     for file, (doc) in combined_results.items():
         doc.score = (doc.cosine_similarity or 0) + (doc.tf_idf_similarity or 0)
     combined_results = sorted(combined_results.items(), key=lambda x: x[1].score, reverse=True)  # Sort by cosine similarity
 
-    #for file, (doc) in combined_results:
-    #    print(file, doc.cosine_similarity, doc.tf_idf_similarity)
+    results = [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2} for doc in combined_results[:50]]
 
-    return [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2} for doc in combined_results[:50]]
+    # Internal logging
+    global logging, latest_search
+    latest_search = {'query': query, 'results': [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2, 'embedding': doc[1].embedding, 'cosine_score': doc[1].cosine_similarity, 'tf_idf_score': doc[1].tf_idf_similarity} for doc in combined_results[:10]]}
+    logging[query] = latest_search['results']
+
+    # Apply bolding
+    results = [apply_bold(result, query, query_embedding) if index < 5 else result for index, result in enumerate(results)]
+
+    return results
 
 def autocomplete(*args, **kwargs):
     return ['test']

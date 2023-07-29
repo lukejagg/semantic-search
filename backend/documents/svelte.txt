@@ -1,4 +1,4 @@
-
+https://svelte.kit
 Introduction:
 Svelte is an innovative front-end framework that has been gaining significant attention in the web development community. Unlike traditional frameworks, Svelte takes a unique approach by shifting much of the work from runtime to build time. This results in highly optimized and efficient applications with smaller bundle sizes and improved performance. Svelte was created by Rich Harris and first released in 2016 as an open-source project.
 

@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .models import Action
 from .serializers import ActionSerializer
 from enum import Enum
-from search.search import search, autocomplete
+from search.search import search, autocomplete, log_click
 
 class ActionType(Enum):
     SEARCH = 'search'
@@ -28,7 +28,7 @@ def handle_autocomplete(search_value):
 def handle_click_link(link):
     # Input link into Luke's ML model for improvement
     # ml_model.input(link)
-
+    log_click(link)
     return Response(status=200)
 
 # CRUD logic

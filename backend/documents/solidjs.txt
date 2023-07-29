@@ -1,4 +1,4 @@
-
+https://solid.js
 Introduction:
 SolidJS is a modern JavaScript UI library that focuses on reactivity and performance. It is designed to be a lightweight alternative to larger frameworks and aims to provide an efficient and enjoyable development experience. SolidJS was created by Ryan Carniato and Ryan Dahl and is gaining popularity among developers for its simplicity and speed.
 
