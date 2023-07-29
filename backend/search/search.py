@@ -11,6 +11,13 @@ from vectordb import InMemoryExactNNVectorDB, HNSWVectorDB
 from sklearn.feature_extraction.text import TfidfVectorizer
 from attrs import define
 from typing import Any, Dict
+import torch
+from .rank_net import RankNet
+
+
+# Load LTR model
+ltr_model = RankNet(1539)  # 768 * 2 + 3
+ltr_model.load_state_dict(torch.load('search/model.pt'))
 
 class ToyDoc(BaseDoc):
   text: str = ''
@@ -104,14 +111,13 @@ def log_search(link: str):
 
 def log_click(link: str):
     global latest_search, logging_index
-    # Add link to logs
-    log = copy.deepcopy(latest_search)
-    log['link'] = link
     # Save click logs to file
     if latest_search is not None:
+        log = copy.deepcopy(latest_search)
+        log['link'] = link
         path = 'logging/clicks/' + str(logging_index) + '.pickle'
         with open(path, 'wb') as file:
-            pickle.dump(latest_search, file)
+            pickle.dump(log, file)
     logging_index += 1
 
 def cosine(query_embedding, word):
@@ -161,22 +167,41 @@ def search(query: str):
             combined_results[doc.name].content2 = doc.content[0]
             combined_results[doc.name].tf_idf_similarity = cosine_similarity
 
-
-
     # Set scores
     for file, (doc) in combined_results.items():
         doc.score = (doc.cosine_similarity or 0) + (doc.tf_idf_similarity or 0)
     combined_results = sorted(combined_results.items(), key=lambda x: x[1].score, reverse=True)  # Sort by cosine similarity
 
-    results = [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2} for doc in combined_results[:50]]
+    results = [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2, 'embedding': doc[1].embedding} for doc in combined_results[:50]]
 
     # Internal logging
     global logging, latest_search
-    latest_search = {'query': query, 'results': [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2, 'embedding': doc[1].embedding, 'cosine_score': doc[1].cosine_similarity, 'tf_idf_score': doc[1].tf_idf_similarity} for doc in combined_results[:10]]}
+    latest_search = {'query': query, 'query_embedding': query_embedding, 'results': [{'link': doc[0], 'description': doc[1].content1 or doc[1].content2, 'embedding': doc[1].embedding, 'cosine_score': doc[1].cosine_similarity, 'tf_idf_score': doc[1].tf_idf_similarity, 'score': doc[1].score} for doc in combined_results[:10]]}
     logging[query] = latest_search['results']
+
+    results = copy.deepcopy(latest_search)['results']
 
     # Apply bolding
     results = [apply_bold(result, query, query_embedding) if index < 5 else result for index, result in enumerate(results)]
+
+    # Put results through LTR model
+    for result in results:
+        if result['embedding'] is None:
+            result['embedding'] = np.zeros(768)
+    values = []
+    for result in results:
+        values.append([torch.tensor(query_embedding), torch.tensor(result['embedding']), torch.tensor([result['score']]), torch.tensor([result['tf_idf_score'] or 0]), torch.tensor([result['cosine_score'] or 0])])
+    values = [torch.cat(value).float() for value in values]
+    values = torch.stack(values)
+    scores = ltr_model.inference(values)
+    scores = scores.detach().numpy()
+
+    # Sort results by LTR score
+    results = sorted(results, key=lambda x: scores[results.index(x)], reverse=True)
+
+    # Remove embedding
+    for result in results:
+        del result['embedding']
 
     return results
 
