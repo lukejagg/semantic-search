@@ -7,6 +7,8 @@ import jost from "./fonts/Jost.ttf";
 import robotomono from "./fonts/RobotoMono.ttf";
 
 import "./styles/animation.css";
+import SearchResults from "./pages/SearchResults";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   {
@@ -18,11 +20,13 @@ const router = createBrowserRouter([
     element: <About />,
   },
   {
-    path: "/contact",
-    element: <div>Contact</div>,
+    path: "/search/:query",
+    element: <SearchResults />,
   },
 ]);
 export default function App() {
+  const queryClient = new QueryClient();
+
   return (
     <>
       <Global
@@ -79,7 +83,9 @@ export default function App() {
           },
         }}
       >
-        <RouterProvider router={router} />
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
       </MantineProvider>
     </>
   );

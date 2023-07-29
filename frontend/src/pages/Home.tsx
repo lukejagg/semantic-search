@@ -5,9 +5,12 @@ import {
   Button,
   Container,
   rem,
+  Image,
+  Center,
 } from "@mantine/core";
 
 import SearchBar from "../components/SearchBar";
+import { useEffect, useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -101,20 +104,19 @@ const useStyles = createStyles((theme) => ({
 
 export default function Home() {
   const { classes } = useStyles();
+  const [focused, setFocused] = useState(false);
+
+  useEffect(() => {}, [focused]);
 
   return (
     <Container className={classes.wrapper} size={1400}>
       <div className={classes.inner}>
-        <Title className={classes.title}>
-          Automated AI{" "}
-          <Text component="span" className={classes.highlight} inherit>
-            code reviews
-          </Text>{" "}
-          for any stack
-        </Title>
+        <Center>
+          <Image src="/logo.png" alt="logo" width={200} height={72} />
+        </Center>
 
         <div className={classes.controls}>
-          <SearchBar />
+          <SearchBar />I
         </div>
 
         <Container p={0} size={600}>

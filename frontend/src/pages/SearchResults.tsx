@@ -110,7 +110,7 @@ export default function SearchResults() {
   const { data, isLoading } = useSearch(query || "");
 
   return (
-    <>
+    <Container>
       <Box>
         <SearchBar />
       </Box>
@@ -124,11 +124,11 @@ export default function SearchResults() {
               faviconUrl={result.faviconUrl}
               title={result.title}
               link={result.link}
-              text={result.text}
+              description={result.description}
             />
           ))
         )}
       </Box>
-    </>
+    </Container>
   );
 }
