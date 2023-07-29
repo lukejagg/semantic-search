@@ -7,13 +7,26 @@ import jost from "./fonts/Jost.ttf";
 import robotomono from "./fonts/RobotoMono.ttf";
 
 import "./styles/animation.css";
+import "react-loading-skeleton/dist/skeleton.css";
+
 import SearchResults from "./pages/SearchResults";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HeaderAction } from "./components/Header";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <>
+        <HeaderAction
+          links={[
+            { label: "Search", link: "/" },
+            { label: "About", link: "/about" },
+          ]}
+        />
+        <Home />,
+      </>
+    ),
   },
   {
     path: "/about",
@@ -21,7 +34,17 @@ const router = createBrowserRouter([
   },
   {
     path: "/search/:query",
-    element: <SearchResults />,
+    element: (
+      <>
+        <HeaderAction
+          links={[
+            { label: "Search", link: "/" },
+            { label: "About", link: "/about" },
+          ]}
+        />
+        <SearchResults />,
+      </>
+    ),
   },
 ]);
 export default function App() {

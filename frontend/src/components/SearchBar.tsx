@@ -8,7 +8,11 @@ import { IconSearch, IconArrowRight, IconArrowLeft } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function SearchBar(props: TextInputProps) {
+interface SearchBarProps extends TextInputProps {
+  setFocus?: (focus: boolean) => void;
+}
+
+export default function SearchBar(props: SearchBarProps) {
   const theme = useMantineTheme();
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -21,6 +25,9 @@ export default function SearchBar(props: TextInputProps) {
   }, []);
 
   const search = () => {
+    if (query === "") {
+      return;
+    }
     navigate(`/search/${query}`);
     console.log(`searching for ${query}`);
   };
@@ -31,6 +38,17 @@ export default function SearchBar(props: TextInputProps) {
       radius="xl"
       size="md"
       value={query}
+      width="100%"
+      onFocus={() => {
+        if (props.setFocus) {
+          props.setFocus(true);
+        }
+      }}
+      onBlur={() => {
+        if (props.setFocus) {
+          props.setFocus(false);
+        }
+      }}
       rightSection={
         <ActionIcon
           size={32}
@@ -48,7 +66,6 @@ export default function SearchBar(props: TextInputProps) {
           )}
         </ActionIcon>
       }
-      placeholder="Search questions"
       rightSectionWidth={42}
       onChange={(event) => setQuery(event.currentTarget.value)}
       onKeyDown={(event) => {

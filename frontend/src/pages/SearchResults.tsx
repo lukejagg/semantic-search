@@ -6,11 +6,13 @@ import {
   Container,
   rem,
   Box,
+  Image,
+  Center,
 } from "@mantine/core";
 
 import SearchBar from "../components/SearchBar";
 
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import SearchResult, { Search, Result } from "../components/SearchResult";
@@ -108,15 +110,78 @@ const useStyles = createStyles((theme) => ({
 export default function SearchResults() {
   let { query } = useParams();
   const { data, isLoading } = useSearch(query || "");
+  const [delay, setDelay] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isLoading) {
+      setDelay(true);
+      setTimeout(() => {
+        setDelay(false);
+      }, 2500);
+    }
+  }, []);
 
   return (
-    <Container>
+    <Container maw={"70rem"}>
+      <Center mb={20}>
+        <Image
+          src="/logo.png"
+          alt="logo"
+          width={200}
+          height={72}
+          sx={{ cursor: "pointer" }}
+          onClick={() => {
+            navigate("/");
+          }}
+        />
+      </Center>
       <Box>
         <SearchBar />
       </Box>
-      <Box>
-        {isLoading ? (
-          <Text>Loading...</Text> // fade out opacity
+      <Text size="xs" c="dimmed" ml={10} mt={10}>
+        {data?.length} results for "{query}"
+      </Text>
+      <Box
+        sx={
+          isLoading || delay
+            ? {
+                maskImage:
+                  "linear-gradient(to bottom, black 0%, transparent 100%);",
+              }
+            : {}
+        }
+      >
+        {isLoading || delay ? (
+          <>
+            <Result
+              faviconUrl={""}
+              title={""}
+              link={""}
+              description={""}
+              skeleton={true}
+            />{" "}
+            <Result
+              faviconUrl={""}
+              title={""}
+              link={""}
+              description={""}
+              skeleton={true}
+            />{" "}
+            <Result
+              faviconUrl={""}
+              title={""}
+              link={""}
+              description={""}
+              skeleton={true}
+            />{" "}
+            <Result
+              faviconUrl={""}
+              title={""}
+              link={""}
+              description={""}
+              skeleton={true}
+            />{" "}
+          </>
         ) : (
           data?.map((result, i) => (
             <Result
