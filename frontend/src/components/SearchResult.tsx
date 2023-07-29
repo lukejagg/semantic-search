@@ -18,6 +18,11 @@ function truncateText(text: string, maxLength = 200) {
   var truncatedText = text.substring(0, maxLength) + "...";
   return truncatedText;
 }
+function htmlDecode(content: string) {
+  let e = document.createElement("div");
+  e.innerHTML = content;
+  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
 
 export function Result({
   faviconUrl,
@@ -67,7 +72,7 @@ export function Result({
                   <Skeleton />
                 </Text>
               </Text>
-              <Text w={"500px"}>
+              <Text w={"800px"}>
                 <Skeleton count={3} />
               </Text>
             </Box>
@@ -103,9 +108,17 @@ export function Result({
               {title || "No title"}
             </Title>
             <Text size="xs" c="dimmed">
-              <Text>{link}</Text>
+              <Text
+                dangerouslySetInnerHTML={{ __html: htmlDecode(link) ?? "" }}
+              ></Text>
             </Text>
-            <Text>{truncateText(description)}</Text>
+            <Text
+              dangerouslySetInnerHTML={{
+                __html: truncateText(description),
+              }}
+            >
+              {/* {truncateText(description)} */}
+            </Text>
           </Box>
         </Box>
       </Paper>
