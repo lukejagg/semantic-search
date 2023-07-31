@@ -1,6 +1,7 @@
 import copy
 import os
 import pickle
+from collections import Counter
 
 from sentence_transformers import SentenceTransformer
 from docarray import BaseDoc
@@ -206,9 +207,15 @@ def search(query: str):
 
     return results
 
-def autocomplete(*args, **kwargs):
-    return ['test']
+# Read from logging/searches.txt
+with open('logging/searches.txt', 'r') as file:
+    previous_searches = file.read().split('\n')
+    # Use Counter
+    previous_searches = Counter(previous_searches)
 
+def autocomplete(query):
+    searches = [c for c in previous_searches if c.startswith(query)]
+    return searches[:10]
 
 print("\n\nSEARCHING!!\n")
 search("How to make a cake")
