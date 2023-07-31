@@ -18,21 +18,21 @@ import {
 export const MOCKDATA = [
   {
     icon: IconGauge,
-    title: "Extreme performance",
+    title: "Centralized",
     description:
-      "This dust is actually a powerful poison that will even make a pro wrestler sick, Regice cloaks itself with frigid air of -328 degrees Fahrenheit",
+      "Introducing a unified search solution for all C1 document needs, streamlining access to diverse documents and optimizing search results with OnePulse, GitHub, Confluence, & more.",
   },
   {
     icon: IconUser,
-    title: "Privacy focused",
+    title: "Smart",
     description:
-      "People say it can run at the same speed as lightning striking, Its icy body is so cold, it will not melt even if it is immersed in magma",
+      "Embrace the power of Semantic Search for effortless document location, bypassing precise keyword requirements and enjoying a more intuitive search process.",
   },
   {
     icon: IconCookie,
-    title: "No third parties",
+    title: "Optimized",
     description:
-      "They’re popular, but they’re rare. Trainers who show them off recklessly may be targeted by thieves",
+      "Experience an evolving search output with an auto-ranking mechanism that uses Learning-to-rank techniques to improve result relevance over time based on employees' document access frequency.",
   },
 ];
 
@@ -51,7 +51,7 @@ export function Feature({ icon: Icon, title, description }: FeatureProps) {
       <Text mt="sm" mb={7}>
         {title}
       </Text>
-      <Text size="sm" color="dimmed" sx={{ lineHeight: 1.6 }}>
+      <Text size="sm" color="" sx={{ lineHeight: 1.6 }}>
         {description}
       </Text>
     </div>

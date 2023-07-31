@@ -94,7 +94,7 @@ const TeamMember = ({ name, title, bio, imageUrl }: TeamMemberProps) => {
       <Text ta="center" c="dimmed" fz="20px">
         {title}
       </Text>
-      <p>{bio}</p>
+      <p style={{ fontSize: "14px" }}>{bio}</p>
     </Card>
   );
 };
@@ -105,7 +105,7 @@ const TeamSection = () => {
     {
       name: "Zach Tang",
       title: "Backend Dev",
-      bio: "",
+      bio: "CS @ UT Dallas",
       imageUrl: "/headshots/zach.png",
     },
     {
@@ -117,7 +117,7 @@ const TeamSection = () => {
     {
       name: "Max Chiu",
       title: "Frontend Dev",
-      bio: "Frontend dev at Econia",
+      bio: `Web3 @ Econia | CS @ UMD College Park`,
       imageUrl: "/headshots/max.png",
     },
     // add more team members as needed

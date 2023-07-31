@@ -133,9 +133,7 @@ export function HeroText() {
 
           <Container p={0} size={600}>
             <Text size="lg" color="dimmed" className={classes.description}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation
+              Search internal docs <i>intelligently</i>
             </Text>
           </Container>
           <div className={classes.controls}>

@@ -24,6 +24,25 @@ function htmlDecode(content: string) {
   return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
+function getFaviconUrl(url: string) {
+  if (url.includes("localhost")) {
+    return "/favicon.ico";
+  }
+
+  if (url.includes("docs.google")) {
+    return "/docs.ico";
+  }
+  if (url.includes("confluence")) {
+    return "/confluence.ico";
+  }
+  if (url.includes("github")) {
+    return "/github.ico";
+  }
+  if (url.includes("sites.google")) {
+    return "/sites.ico";
+  }
+  return undefined;
+}
 export function Result({
   faviconUrl,
   title,
@@ -87,7 +106,7 @@ export function Result({
         <Box sx={{ display: "flex", padding: "10px" }}>
           <Box>
             <Image
-              src={faviconUrl || "/favicon.ico"}
+              src={getFaviconUrl(link) || "/favicon.ico"}
               alt="Favicon"
               width={32}
               height={32}

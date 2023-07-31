@@ -5,6 +5,7 @@ import About from "./pages/About";
 import { Global } from "@mantine/core";
 import jost from "./fonts/Jost.ttf";
 import robotomono from "./fonts/RobotoMono.ttf";
+import optimist from "./fonts/Optimist.woff2";
 
 import "./styles/animation.css";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -66,6 +67,12 @@ export default function App() {
               src: `url('${robotomono}') format("truetype")`,
             },
           },
+          {
+            "@font-face": {
+              fontFamily: "Optimist",
+              src: `url('${optimist}') format("woff2")`,
+            },
+          },
         ]}
       />
       <MantineProvider
@@ -75,7 +82,7 @@ export default function App() {
           colorScheme: "light",
           primaryColor: "blue",
           fontFamily:
-            "RobotoMono, ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji",
+            "Optimist, RobotoMono, ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji",
           headings: { fontFamily: "RobotoMono" },
           colors: {
             // override dark colors to change them for all components
